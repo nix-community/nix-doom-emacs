@@ -52,22 +52,25 @@ Using `flake.nix`:
   outputs = {
     self,
     nixpkgs,
+    lib,
     home-manager,
     nix-doom-emacs,
     ...
   }: {
-    nixosConfigurations.exampleHost = nixpkgs.lib.nixosSystem {
+    nixosConfigurations.exampleHost = lib.nixosSystem {
       system = "x86_64-linux";
       modules = [
         home-manager.nixosModules.home-manager
         {
-          home-manager.users.exampleUser = { pkgs, ... }: {
-            imports = [ nix-doom-emacs.hmModule ];
-            programs.doom-emacs = {
-              enable = true;
-              doomPrivateDir = ./doom.d;
-            };
-          };
+          home-manager.users.exampleUser = lib.mkMerge [
+            nix-doom-emacs.hmModule
+            { pkgs, ... }: {
+              programs.doom-emacs = {
+                enable = true;
+                doomPrivateDir = ./doom.d;
+              };
+            }
+          ];
         }
       ];
     };
