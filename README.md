@@ -64,7 +64,7 @@ Using `flake.nix`:
         {
           home-manager.users.exampleUser = lib.mkMerge [
             nix-doom-emacs.hmModule
-            { pkgs, ... }: {
+            { ... }: {
               programs.doom-emacs = {
                 enable = true;
                 doomPrivateDir = ./doom.d;
