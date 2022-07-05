@@ -206,8 +206,7 @@ let
     load-config-from-site = writeTextDir "share/emacs/site-lisp/default.el" ''
       (message "doom-emacs is not placed in `doom-private-dir',
       loading from `site-lisp'")
-      (when (> emacs-major-version 26)
-            (load "${doom-emacs}/early-init.el"))
+      (load "${doom-emacs}/early-init.el")
       (load "${doom-emacs}/core/core-start.el")
     '';
   in (emacsPackages.emacsWithPackages (epkgs: [ load-config-from-site ]));
