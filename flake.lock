@@ -65,6 +65,22 @@
         "type": "github"
       }
     },
+    "evil-escape": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1588439096,
+        "narHash": "sha256-aB2Ge5o/93B18tPf4fN1c+O46CNh/nOqwLJbox4c8Gw=",
+        "owner": "hlissner",
+        "repo": "evil-escape",
+        "rev": "819f1ee1cf3f69a1ae920e6004f2c0baeebbe077",
+        "type": "github"
+      },
+      "original": {
+        "owner": "hlissner",
+        "repo": "evil-escape",
+        "type": "github"
+      }
+    },
     "evil-markdown": {
       "flake": false,
       "locked": {
@@ -310,6 +326,7 @@
         "doom-snippets": "doom-snippets",
         "emacs-overlay": "emacs-overlay",
         "emacs-so-long": "emacs-so-long",
+        "evil-escape": "evil-escape",
         "evil-markdown": "evil-markdown",
         "evil-org-mode": "evil-org-mode",
         "evil-quick-diff": "evil-quick-diff",
@@ -326,7 +343,8 @@
         "php-extras": "php-extras",
         "revealjs": "revealjs",
         "rotate-text": "rotate-text",
-        "sln-mode": "sln-mode"
+        "sln-mode": "sln-mode",
+        "ws-butler": "ws-butler"
       }
     },
     "rotate-text": {
@@ -358,6 +376,22 @@
       "original": {
         "owner": "sensorflo",
         "repo": "sln-mode",
+        "type": "github"
+      }
+    },
+    "ws-butler": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1634511126,
+        "narHash": "sha256-c0y0ZPtxxICPk+eaNbbQf6t+FRCliNY54CCz9QHQ8ZI=",
+        "owner": "hlissner",
+        "repo": "ws-butler",
+        "rev": "572a10c11b6cb88293de48acbb59a059d36f9ba5",
+        "type": "github"
+      },
+      "original": {
+        "owner": "hlissner",
+        "repo": "ws-butler",
         "type": "github"
       }
     }
