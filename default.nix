@@ -202,7 +202,7 @@ let
     chmod u+w $out/config.el
     cat $extraConfigPath > $out/config.extra.el
     cat > $out/config.el << EOF
-    (load "${builtins.toString doomPrivateDir}/config.el")
+    (load "${doomPrivateDir}/config.el")
     (load "$out/config.extra.el")
     EOF
   '';
@@ -213,11 +213,10 @@ let
     load-config-from-site = writeTextDir "share/emacs/site-lisp/default.el" ''
       (message "doom-emacs is not placed in `doom-private-dir',
       loading from `site-lisp'")
-    ''
-    # on Emacs 29+ we will use `--init-directory` instead of `default.el`
-    + lib.optionalString (!isEmacs29) ''
+      ${lib.optionalString (!isEmacs29) ''
       (load "${doom-emacs}/early-init.el")
       (load "${doom-emacs}/core/core-start.el")
+      ''}
     '';
   in (emacsPackages.emacsWithPackages (epkgs: [ load-config-from-site ]));
 
