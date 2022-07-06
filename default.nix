@@ -1,5 +1,5 @@
 { # The files would be going to ~/.config/doom (~/.doom.d)
-doomPrivateDir
+  doomPrivateDir
 /* Extra packages to install
 
    Useful for non-emacs packages containing emacs bindings (e.g.
@@ -8,8 +8,7 @@ doomPrivateDir
    Example:
      extraPackages = epkgs: [ pkgs.mu ];
 */
-, extraPackages ? epkgs:
-  [ ]
+, extraPackages ? epkgs: [ ]
   /* Extra configuration to source during initialization
 
      Use this to refer other nix derivations.
@@ -36,8 +35,7 @@ doomPrivateDir
        });
      };
 */
-, emacsPackagesOverlay ? self: super:
-  { }
+, emacsPackagesOverlay ? self: super: { }
   /* Use bundled revision of github.com/nix-community/emacs-overlay
      as `emacsPackages`.
   */
@@ -54,7 +52,8 @@ doomPrivateDir
          "emacs-overlay" = fetchFromGitHub { owner = /* ...*\/; };
        };
   */
-, dependencyOverrides ? { }, lib, pkgs, stdenv, buildEnv, makeWrapper
+, dependencyOverrides ? { }
+, lib, pkgs, stdenv, buildEnv, makeWrapper
 , runCommand, fetchFromGitHub, substituteAll, writeShellScript
 , writeShellScriptBin, writeTextDir }:
 
@@ -63,6 +62,7 @@ assert (lib.assertMsg ((builtins.isPath doomPrivateDir)
   "doomPrivateDir must be either a path, a derivation or a stringified store path");
 
 let
+  isEmacs29 = lib.versionAtLeast emacsPackages.emacs.version "29";
   flake =
     (import
       (let lock = with builtins; fromJSON (readFile ./flake.lock); in
@@ -213,11 +213,29 @@ let
     load-config-from-site = writeTextDir "share/emacs/site-lisp/default.el" ''
       (message "doom-emacs is not placed in `doom-private-dir',
       loading from `site-lisp'")
-      (when (> emacs-major-version 26)
-            (load "${doom-emacs}/early-init.el"))
+    ''
+    # on Emacs 29+ we will use `--init-directory` instead of `default.el`
+    + lib.optionalString (!isEmacs29) ''
+      (load "${doom-emacs}/early-init.el")
       (load "${doom-emacs}/core/core-start.el")
     '';
   in (emacsPackages.emacsWithPackages (epkgs: [ load-config-from-site ]));
+
+  # create a `emacs.d` dir to be loaded using `--init-directory` flag from Emacs 29+
+  # this will allow proper usage of `early-init.el`, fixing FOUC issues and improving
+  # startup performance
+  init-el = pkgs.writeTextDir "emacs.d/init.el" ''
+    (load "${doom-emacs}/core/core-start.el")
+  '';
+
+  early-init-el = pkgs.writeTextDir "emacs.d/early-init.el" ''
+    (load "${doom-emacs}/early-init.el")
+  '';
+
+  emacs-d = pkgs.symlinkJoin {
+    name = "emacs.d";
+    paths = [ early-init-el init-el ];
+  };
 
   build-summary = writeShellScript "build-summary" ''
     printf "\n${fmt.green}Successfully built nix-doom-emacs!${fmt.reset}\n"
@@ -227,13 +245,23 @@ let
   '';
 in emacs.overrideAttrs (esuper:
   let
+    # `--init-directory` is supported by Emacs 29+ only
+    initDirArgs = lib.optionalString isEmacs29 ''
+      if [[ $(basename $1) == emacs ]] || [[ $(basename $1) == emacs-* ]]; then
+        wrapArgs+=(--add-flags '--init-directory ${emacs-d}/emacs.d')
+      fi
+    '';
     cmd = ''
       wrapEmacs() {
-          wrapProgram $1 \
-                    --set DOOMDIR ${doomDir} \
-                    --set NIX_DOOM_EMACS_BINARY $1 \
-                    --set __DEBUG_doom_emacs_DIR ${doom-emacs} \
-                    --set __DEBUG_doomLocal_DIR ${doomLocal}
+          local -a wrapArgs=(
+              --set DOOMDIR ${doomDir}
+              --set NIX_DOOM_EMACS_BINARY $1
+              --set __DEBUG_doom_emacs_DIR ${doom-emacs}
+              --set __DEBUG_doomLocal_DIR ${doomLocal}
+          )
+          ${initDirArgs}
+
+          wrapProgram $1 "''${wrapArgs[@]}"
       }
 
       for prog in $out/bin/*; do
