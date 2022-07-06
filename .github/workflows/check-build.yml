@@ -36,6 +36,7 @@ jobs:
         fi
     - run: |
         nix build .#checks.x86_64-linux.init-example-el
+        nix build .#checks.x86_64-linux.init-example-el-emacsGit
     - name: Export /nix/store contents
       if: ${{ !steps.cache-nix-store.outputs.cache-hit }}
       run: |
