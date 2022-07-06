@@ -87,11 +87,21 @@
     flake-compat.flake = false;
   };
 
-  outputs = { self, nixpkgs, flake-utils, ... }@inputs:
+  outputs = { self, nixpkgs, flake-utils, emacs-overlay, ... }@inputs:
     let inherit (flake-utils.lib) eachDefaultSystem eachSystem;
     in eachDefaultSystem (system:
-      let pkgs = import nixpkgs { inherit system; };
+      let
+        pkgs = import nixpkgs {
+          inherit system;
+          # we are not using emacs-overlay's flake.nix here,
+          # to avoid unnecessary inputs to be added to flake.lock,
+          # however this means we need to import the overlay in a
+          # hack-ish way
+          overlays = [ (import emacs-overlay) ];
+        };
       in {
+        # only used for checks, please don't depend on it
+        _pkgs = pkgs;
         devShell = pkgs.mkShell {
           buildInputs =
             [ (pkgs.python3.withPackages (ps: with ps; [ PyGithub ])) ];
@@ -104,6 +114,11 @@
           init-example-el = self.outputs.package.${system} {
             doomPrivateDir = ./test/doom.d;
             dependencyOverrides = inputs;
+          };
+          init-example-el-emacsGit = self.outputs.package.${system} {
+            doomPrivateDir = ./test/doom.d;
+            dependencyOverrides = inputs;
+            emacsPackages = with self.outputs._pkgs.${system}; emacsPackagesFor emacsGit;
           };
         };
       }) // {
