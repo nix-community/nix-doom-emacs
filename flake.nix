@@ -90,18 +90,8 @@
   outputs = { self, nixpkgs, flake-utils, emacs-overlay, ... }@inputs:
     let inherit (flake-utils.lib) eachDefaultSystem eachSystem;
     in eachDefaultSystem (system:
-      let
-        pkgs = import nixpkgs {
-          inherit system;
-          # we are not using emacs-overlay's flake.nix here,
-          # to avoid unnecessary inputs to be added to flake.lock,
-          # however this means we need to import the overlay in a
-          # hack-ish way
-          overlays = [ (import emacs-overlay) ];
-        };
+      let pkgs = import nixpkgs { inherit system; };
       in {
-        # only used for checks, please don't depend on it
-        _pkgs = pkgs;
         devShell = pkgs.mkShell {
           buildInputs =
             [ (pkgs.python3.withPackages (ps: with ps; [ PyGithub ])) ];
@@ -110,17 +100,27 @@
           pkgs.callPackage self
           (args // { dependencyOverrides = (inputs // dependencyOverrides); });
       }) // eachSystem [ "x86_64-linux" "aarch64-darwin" ] (system: {
-        checks = {
-          init-example-el = self.outputs.package.${system} {
-            doomPrivateDir = ./test/doom.d;
-            dependencyOverrides = inputs;
-          };
-          init-example-el-emacsGit = self.outputs.package.${system} {
-            doomPrivateDir = ./test/doom.d;
-            dependencyOverrides = inputs;
-            emacsPackages = with self.outputs._pkgs.${system}; emacsPackagesFor emacsGit;
-          };
-        };
+        checks =
+          let
+            pkgs = import nixpkgs {
+              inherit system;
+              # we are not using emacs-overlay's flake.nix here,
+              # to avoid unnecessary inputs to be added to flake.lock;
+              # this means we need to import the overlay in a hack-ish way
+              overlays = [ (import emacs-overlay) ];
+            };
+          in
+            {
+              init-example-el = self.outputs.package.${system} {
+                doomPrivateDir = ./test/doom.d;
+                dependencyOverrides = inputs;
+              };
+              init-example-el-emacsGit = self.outputs.package.${system} {
+                doomPrivateDir = ./test/doom.d;
+                dependencyOverrides = inputs;
+                emacsPackages = with pkgs; emacsPackagesFor emacsGit;
+              };
+            };
       }) // {
         hmModule = import ./modules/home-manager.nix inputs;
       };

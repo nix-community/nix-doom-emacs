@@ -214,8 +214,8 @@ let
       (message "doom-emacs is not placed in `doom-private-dir',
       loading from `site-lisp'")
       ${lib.optionalString (!isEmacs29) ''
-      (load "${doom-emacs}/early-init.el")
-      (load "${doom-emacs}/core/core-start.el")
+        (load "${doom-emacs}/early-init.el")
+        (load "${doom-emacs}/core/core-start.el")
       ''}
     '';
   in (emacsPackages.emacsWithPackages (epkgs: [ load-config-from-site ]));
