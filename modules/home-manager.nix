@@ -91,6 +91,7 @@ in
     in
     mkMerge ([
       {
+        # TODO: remove once Emacs 29+ is released and commonly available
         home.file.".emacs.d/init.el".text = ''
           (load "default.el")
         '';

@@ -209,6 +209,7 @@ let
 
   # Stage 5: catch-all wrapper capable to run doom-emacs even
   # without installing ~/.emacs.d
+  # TODO: remove once Emacs 29+ is released and commonly available
   emacs = let
     load-config-from-site = writeTextDir "share/emacs/site-lisp/default.el" ''
       (message "doom-emacs is not placed in `doom-private-dir',
