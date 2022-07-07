@@ -223,11 +223,11 @@ let
   # create a `emacs.d` dir to be loaded using `--init-directory` flag from Emacs 29+
   # this will allow proper usage of `early-init.el`, fixing FOUC issues and improving
   # startup performance
-  init-el = pkgs.writeTextDir "emacs.d/init.el" ''
+  init-el = pkgs.writeTextDir "share/emacs.d/init.el" ''
     (load "${doom-emacs}/core/core-start.el")
   '';
 
-  early-init-el = pkgs.writeTextDir "emacs.d/early-init.el" ''
+  early-init-el = pkgs.writeTextDir "share/emacs.d/early-init.el" ''
     (load "${doom-emacs}/early-init.el")
   '';
 
@@ -247,7 +247,7 @@ in emacs.overrideAttrs (esuper:
     # `--init-directory` is supported by Emacs 29+ only
     initDirArgs = lib.optionalString isEmacs29 ''
       if [[ $(basename $1) == emacs ]] || [[ $(basename $1) == emacs-* ]]; then
-        wrapArgs+=(--add-flags '--init-directory ${emacs-d}/emacs.d')
+        wrapArgs+=(--add-flags '--init-directory ${emacs-d}/share/emacs.d')
       fi
     '';
     cmd = ''
