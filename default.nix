@@ -193,7 +193,7 @@ let
   };
 
   # Stage 4: `extraConfig` is merged into private configuration
-  doomDir = pkgs.runCommand "doom-private" {
+  doomDir = runCommand "doom-private" {
     inherit extraConfig;
     passAsFile = [ "extraConfig" ];
   } ''
@@ -224,18 +224,15 @@ let
   # create a `emacs.d` dir to be loaded using `--init-directory` flag from Emacs 29+
   # this will allow proper usage of `early-init.el`, fixing FOUC issues and improving
   # startup performance
-  init-el = pkgs.writeTextDir "share/emacs.d/init.el" ''
-    (load "${doom-emacs}/core/core-start.el")
-  '';
-
-  early-init-el = pkgs.writeTextDir "share/emacs.d/early-init.el" ''
+  emacs-dir = runCommand "emacs-dir" { } ''
+    mkdir -p $out
+    cat > $out/early-init.el << EOF
     (load "${doom-emacs}/early-init.el")
+    EOF
+    cat > $out/init.el << EOF
+    (load "${doom-emacs}/core/core-start.el")
+    EOF
   '';
-
-  emacs-d = pkgs.symlinkJoin {
-    name = "emacs.d";
-    paths = [ early-init-el init-el ];
-  };
 
   build-summary = writeShellScript "build-summary" ''
     printf "\n${fmt.green}Successfully built nix-doom-emacs!${fmt.reset}\n"
@@ -248,7 +245,7 @@ in emacs.overrideAttrs (esuper:
     # `--init-directory` is supported by Emacs 29+ only
     initDirArgs = lib.optionalString isEmacs29 ''
       if [[ $(basename $1) == emacs ]] || [[ $(basename $1) == emacs-* ]]; then
-        wrapArgs+=(--add-flags '--init-directory ${emacs-d}/share/emacs.d')
+        wrapArgs+=(--add-flags '--init-directory ${emacs-dir}')
       fi
     '';
     cmd = ''
