@@ -1,7 +1,7 @@
-From 4a98147cd1c74398347900312d9a9b8766c7b632 Mon Sep 17 00:00:00 2001
+From 35828ee6d2df7aef034ff76a1e874182b2bed041 Mon Sep 17 00:00:00 2001
 From: Thiago Kenji Okada <thiagokokada@gmail.com>
-Date: Fri, 29 Jul 2022 10:32:00 +0100
-Subject: [PATCH] Nix integration
+Date: Sun, 7 Aug 2022 13:06:50 +0100
+Subject: [PATCH 2/2] Nix integration
 
 ---
  early-init.el        | 55 +-------------------------------------------
@@ -76,10 +76,10 @@ index 4335f8db1..c6c29cdd5 100644
  
  ;;
 diff --git a/lisp/doom-cli-lib.el b/lisp/doom-cli-lib.el
-index 309a1fa88..97129d7c0 100644
+index 995baa6ed..ba3974c4f 100644
 --- a/lisp/doom-cli-lib.el
 +++ b/lisp/doom-cli-lib.el
-@@ -116,7 +116,7 @@ If nil, falls back to less.")
+@@ -161,7 +161,7 @@ If nil, falls back to less.")
  
  Only applies if (exit! :pager) or (exit! :pager?) are called.")
  
@@ -89,7 +89,7 @@ index 309a1fa88..97129d7c0 100644
  
  Must have two arguments, one for session id and the other for log type.")
 diff --git a/lisp/doom.el b/lisp/doom.el
-index 981190612..26baf8b33 100644
+index 807ad09fa..a7a88f8f1 100644
 --- a/lisp/doom.el
 +++ b/lisp/doom.el
 @@ -132,15 +132,7 @@
@@ -143,11 +143,11 @@ index 981190612..26baf8b33 100644
 @@ -295,6 +288,7 @@ users).")
    ;; Don't store eln files in ~/.emacs.d/eln-cache (where they can easily be
    ;; deleted by 'doom upgrade').
-   (add-to-list 'native-comp-eln-load-path (concat doom-cache-dir "eln/"))
-+  (add-to-list 'native-comp-eln-load-path (concat doom-cache-dir "cache/eln/"))
+   (add-to-list 'native-comp-eln-load-path (file-name-concat doom-cache-dir "eln/")))
++  (add-to-list 'native-comp-eln-load-path (file-name-concat doom-cache-dir "cache/eln/"))
  
-   (with-eval-after-load 'comp
-     ;; HACK Disable native-compilation for some troublesome packages
+ 
+ ;;
 -- 
 2.36.0
 
