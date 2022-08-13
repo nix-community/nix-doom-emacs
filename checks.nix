@@ -37,6 +37,7 @@ in
   init-example-el = self.outputs.package.${system} {
     doomPrivateDir = ./test/doom.d;
     dependencyOverrides = inputs;
+    emacsPackages = with pkgs; emacsPackagesFor emacsNativeComp;
   };
   init-example-el-emacsGit = self.outputs.package.${system} {
     doomPrivateDir = ./test/doom.d;
