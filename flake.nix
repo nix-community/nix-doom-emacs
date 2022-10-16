@@ -36,7 +36,8 @@
   description = "nix-doom-emacs home-manager module";
 
   inputs = {
-    doom-emacs.url = "github:doomemacs/doomemacs/master";
+    # TODO: change back to master once we get synced back with upstream changes
+    doom-emacs.url = "github:doomemacs/doomemacs/3853dff5e11655e858d0bfae64b70cb12ef685ac";
     doom-emacs.flake = false;
     doom-snippets.url = "github:doomemacs/snippets";
     doom-snippets.flake = false;
