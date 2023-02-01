@@ -37,9 +37,9 @@ In all of these methods, you'll need your Doom Emacs configuration. It should co
       system  = "x86_64-linux";
       modules = [
         home-manager.nixosModules.home-manager
+        nix-doom-emacs.hmModule
         {
           home-manager.users.exampleUser = { ... }: {
-            imports = [ nix-doom-emacs.hmModule ];
             programs.doom-emacs = {
               enable = true;
               doomPrivateDir = ./doom.d; # Directory containing your config.el, init.el
