@@ -1,0 +1,55 @@
+diff --git a/lisp/doom.el b/lisp/doom.el
+index f8f91b9aa..00f973551 100644
+--- a/lisp/doom.el
++++ b/lisp/doom.el
+@@ -220,12 +220,7 @@ These files should not be shared across systems. By default, it is used by
+ 
+ (define-obsolete-variable-alias 'doom-etc-dir 'doom-data-dir "3.0.0")
+ (defvar doom-data-dir
+-  (if doom-profile
+-      (if IS-WINDOWS
+-          (expand-file-name "doomemacs/data/" (getenv-internal "APPDATA"))
+-        (expand-file-name "doom/" (or (getenv-internal "XDG_DATA_HOME") "~/.local/share")))
+-    ;; DEPRECATED: .local will be removed entirely in 3.0
+-    (file-name-concat doom-local-dir "etc/"))
++  (expand-file-name "doom/" (or (getenv-internal "XDG_DATA_HOME") "~/.local/share"))
+   "Where Doom stores its global data files.
+ 
+ Data files contain shared and long-lived data that Doom, Emacs, and their
+@@ -239,12 +234,7 @@ generated files for profiles, profiles themselves, autoloads/loaddefs, etc.
+ For profile-local data files, use `doom-profile-data-dir' instead.")
+ 
+ (defvar doom-cache-dir
+-  (if doom-profile
+-      (if IS-WINDOWS
+-          (expand-file-name "doomemacs/cache/" (getenv-internal "APPDATA"))
+-        (expand-file-name "doom/" (or (getenv-internal "XDG_CACHE_HOME") "~/.cache")))
+-    ;; DEPRECATED: .local will be removed entirely in 3.0
+-    (file-name-concat doom-local-dir "cache/"))
++  (expand-file-name "doom/" (or (getenv-internal "XDG_CACHE_HOME") "~/.cache"))
+   "Where Doom stores its global cache files.
+ 
+ Cache files represent non-essential data that shouldn't be problematic when
+@@ -258,12 +248,7 @@ session files, ELPA archives, authinfo files, org-persist, etc.
+ For profile-local cache files, use `doom-profile-cache-dir' instead.")
+ 
+ (defvar doom-state-dir
+-  (if doom-profile
+-      (if IS-WINDOWS
+-          (expand-file-name "doomemacs/state/" (getenv-internal "APPDATA"))
+-        (expand-file-name "doom/" (or (getenv-internal "XDG_STATE_HOME") "~/.local/state")))
+-    ;; DEPRECATED: .local will be removed entirely in 3.0
+-    (file-name-concat doom-local-dir "state/"))
++  (expand-file-name "doom/" (or (getenv-internal "XDG_STATE_HOME") "~/.local/state"))
+   "Where Doom stores its global state files.
+ 
+ State files contain non-essential, unportable, but persistent data which, if
+@@ -291,7 +276,7 @@ For profile-local state files, use `doom-profile-state-dir' instead.")
+   "For profile-local state files under `doom-state-dir'.")
+ 
+ (defconst doom-profile-dir
+-  (file-name-concat doom-profile-data-dir "@" (cdr doom-profile))
++  (file-name-concat doom-local-dir "etc" "@" (cdr doom-profile))
+   "Where generated files for the active profile are kept.")
+ 
+ ;; DEPRECATED: Will be moved to cli/env

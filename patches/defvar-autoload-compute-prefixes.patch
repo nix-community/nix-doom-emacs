@@ -1,0 +1,15 @@
+diff --git a/lisp/cli/packages.el b/lisp/cli/packages.el
+index 3026ee789..b8ba50274 100644
+--- a/lisp/cli/packages.el
++++ b/lisp/cli/packages.el
+@@ -721,8 +721,8 @@ original state.")
+
+ (defadvice! doom-cli--straight-no-compute-prefixes-a (fn &rest args)
+   :around #'straight--build-autoloads
+-  (let (autoload-compute-prefixes)
+-    (apply fn args)))
++  (defvar autoload-compute-prefixes)
++  (apply fn args))
+
+ (defadvice! doom-cli--straight-fallback-to-tty-prompt-a (fn prompt actions)
+   "Modifies straight to prompt on the terminal when in noninteractive sessions."

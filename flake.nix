@@ -36,12 +36,11 @@
   description = "nix-doom-emacs home-manager module";
 
   inputs = {
-    # TODO: change back to master once we get synced back with upstream changes
-    doom-emacs.url = "github:doomemacs/doomemacs/3853dff5e11655e858d0bfae64b70cb12ef685ac";
+    doom-emacs.url = "github:doomemacs/doomemacs";
     doom-emacs.flake = false;
     doom-snippets.url = "github:doomemacs/snippets";
     doom-snippets.flake = false;
-    emacs-overlay.url = "github:nix-community/emacs-overlay/c16be6de78ea878aedd0292aa5d4a1ee0a5da501";
+    emacs-overlay.url = "github:nix-community/emacs-overlay";
     emacs-overlay.flake = false;
     emacs-so-long.url = "github:hlissner/emacs-so-long";
     emacs-so-long.flake = false;
@@ -55,7 +54,7 @@
     evil-quick-diff.flake = false;
     explain-pause-mode.url = "github:lastquestion/explain-pause-mode";
     explain-pause-mode.flake = false;
-    format-all.url = "github:lassik/emacs-format-all-the-code/47d862d40a088ca089c92cd393c6dca4628f87d3";
+    format-all.url = "github:lassik/emacs-format-all-the-code";
     format-all.flake = false;
     nix-straight.url = "github:nix-community/nix-straight.el";
     nix-straight.flake = false;

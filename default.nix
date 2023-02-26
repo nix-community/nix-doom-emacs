@@ -109,6 +109,7 @@ let
     phases = [ "unpackPhase" "patchPhase" "installPhase" ];
     patches = [
       ./patches/fix-paths.patch
+      ./patches/defvar-autoload-compute-prefixes.patch
     ];
     installPhase = ''
       mkdir -p $out
@@ -193,7 +194,8 @@ let
     src = doomSrc;
 
     patches = [
-      ./patches/nix-integration.patch
+      ./patches/doom-el.patch
+      ./patches/early-init.patch
     ];
 
     buildPhase = ''
@@ -217,7 +219,6 @@ let
     chmod u+w $out/config.el
     cat $extraConfigPath > $out/config.extra.el
     cat > $out/config.el << EOF
-    (load "${./doom-modeline-workarounds.el}")
     (load "${doomPrivateDir}/config.el")
     (load "$out/config.extra.el")
     EOF
