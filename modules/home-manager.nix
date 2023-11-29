@@ -22,6 +22,27 @@ in
       '';
       apply = path: if lib.isStorePath path then path else builtins.path { inherit path; };
     };
+    doomModules = mkOption {
+      description = ''
+        A set of derivations that build a `modules` directory that are included
+        to your Doom configuration.
+
+        Can be used to install doom modules that get built using the
+        `nix-doom-emacs.lib.mkDoomModules` function.
+      '';
+      default = [];
+      example = literalExample ''
+        doomModules =
+          let
+            myDoomModule = inputs.nix-doom-emacs.lib.mkDoomModules {
+              name = "my-doom-module";
+              src  = ./modules;
+              literateCode = true;
+            };
+          in
+           [ myDoomModule ]
+      '';
+    };
     doomPackageDir = mkOption {
       description = ''
         A Doom configuration directory from which to build the Emacs package environment.
@@ -107,7 +128,7 @@ in
       emacs = pkgs.callPackage self {
         extraPackages = (epkgs: cfg.extraPackages);
         emacsPackages = pkgs.emacsPackagesFor cfg.emacsPackage;
-        inherit (cfg) doomPrivateDir doomPackageDir extraConfig emacsPackagesOverlay;
+        inherit (cfg) doomPrivateDir doomPackageDir doomModules extraConfig emacsPackagesOverlay;
         dependencyOverrides = inputs;
       };
     in

@@ -21,6 +21,23 @@
        ];
    */
 ,  doomPackageDir ? doomPrivateDir
+  /* A list of Doom modules to merge in the doomPrivateDir.
+
+     Can be used when you want to install Doom modules that come from a derivation. This
+     derivation will usually be produced by `nix-doom-emacs.lib.mkDoomModules`.
+
+     Example:
+       doomModules =
+         let
+           myDoomModule = inputs.nix-doom-emacs.lib.mkDoomModules {
+             name = "my-doom-module";
+             src  = ./modules;
+             literateCode = true;
+           };
+         in
+          [ myDoomModule ];
+  */
+,  doomModules ? []
   /* Extra packages to install
 
      Useful for non-emacs packages containing emacs bindings (e.g.
@@ -207,18 +224,27 @@ let
     '';
   };
 
+  doomPrivateDirWithModules =
+    if builtins.length doomModules > 0 then
+      pkgs.symlinkJoin {
+        name = "doom.d";
+        paths = [ doomPrivateDir ] ++ doomModules;
+      }
+    else
+      doomPrivateDir;
+
   # Stage 4: `extraConfig` is merged into private configuration
   doomDir = runCommand "doom-private" {
     inherit extraConfig;
     passAsFile = [ "extraConfig" ];
   } ''
     mkdir -p $out
-    cp -rL ${doomPrivateDir}/* $out
+    cp -rL ${doomPrivateDirWithModules}/* $out
     chmod u+w $out/config.el
     cat $extraConfigPath > $out/config.extra.el
     cat > $out/config.el << EOF
     (load "${./doom-modeline-workarounds.el}")
-    (load "${doomPrivateDir}/config.el")
+    (load "${doomPrivateDirWithModules}/config.el")
     (load "$out/config.extra.el")
     EOF
   '';

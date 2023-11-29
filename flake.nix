@@ -123,6 +123,7 @@
         };
         checks = import ./checks.nix { inherit system; } inputs;
       }) // {
+        lib = import ./lib.nix;
         hmModule = import ./modules/home-manager.nix inputs;
       };
 }
