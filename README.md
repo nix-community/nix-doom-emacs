@@ -12,6 +12,15 @@
 
 nix-doom-emacs (abbreviated as NDE) provides a customisable Nix derivation for [Doom Emacs](https://github.com/doomemacs/doomemacs).
 
+## ⚠ Broken
+
+This project has been broken for more than a year due to Doom's excessive divergence 
+from emacs-overlay's package set, which is not Doom's fault but rather 
+a missing Elisp package locking mechanism on our end. 
+([Update PR](https://github.com/nix-community/nix-doom-emacs/pull/316), [Tracking issue](https://github.com/nix-community/nix-doom-emacs/issues/353))
+
+---
+
 The expression builds a `doom-emacs` distribution with dependencies
 pre-installed based on an existing `~/.doom.d` directory.
 
