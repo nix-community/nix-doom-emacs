@@ -19,6 +19,11 @@ from emacs-overlay's package set, which is not Doom's fault but rather
 a missing Elisp package locking mechanism on our end. 
 ([Update PR](https://github.com/nix-community/nix-doom-emacs/pull/316), [Tracking issue](https://github.com/nix-community/nix-doom-emacs/issues/353))
 
+Prospective users are instead recommended to try
+[marienz/nix-doom-emacs-unstraightened](https://github.com/marienz/nix-doom-emacs-unstraightened),
+which solves the problem bypassing `straight.el` completely and harvesting the
+list of dependencies directly via the `doom` cli.
+
 ---
 
 The expression builds a `doom-emacs` distribution with dependencies
